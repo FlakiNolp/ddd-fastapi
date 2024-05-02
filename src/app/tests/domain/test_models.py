@@ -4,14 +4,17 @@ from app.domain.models.card import Card
 from app.domain.models.notification import Notification
 from app.domain.models.subscription_plan import SubscriptionPlan
 from app.domain.models.user import User
+from app.domain.models.project import Project
+
 from app.domain.values.card_number import CardNumber
 from app.domain.values.cvv import CVV
 from app.domain.values.email import Email
 from app.domain.values.first_name import FirstName
 from app.domain.values.last_name import LastName
 from app.domain.values.password import Password
-from app.domain.models.project import Project
 from app.domain.values.project_name import ProjectName
+
+from app.domain.events.users import NewUserInProject
 
 
 def test_create_empty_user():
@@ -45,11 +48,22 @@ def test_create_full_user():
     assert user.subscription_plan == subscription_plan
 
 
-def test_add_to_project():
+def test_add_user_to_project():
     email = Email('mx@gmail.com')
     password = Password('h.G4aj')
     user = User(email, password)
     project = Project(name=ProjectName('first'))
-    user.add_to_project(project)
 
-    assert project in user.projects
+    user.add_to_project(project)
+    events = user.pull_events()
+    pulled_events = user.pull_events()
+
+    assert not pulled_events, pulled_events
+    assert len(events) == 1, events
+
+    new_event = events[0]
+    assert isinstance(new_event, NewUserInProject), new_event
+    assert new_event.user_oid == user.oid
+    assert new_event.project_oid == project.oid
+    assert new_event.project_name == project.name.value
+

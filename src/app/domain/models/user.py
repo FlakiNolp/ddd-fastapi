@@ -8,7 +8,7 @@ from app.domain.models.project import Project
 from app.domain.models.subscription_plan import SubscriptionPlan
 from app.domain.values.email import Email
 from app.domain.values.password import Password
-from app.domain.events.users import AddUserToProject
+from app.domain.events.users import NewUserInProject, NewUserCreated
 
 
 @dataclass
@@ -26,11 +26,16 @@ class User(BaseModel):
     def __hash__(self) -> int:
         return hash(self.oid)
 
+    @classmethod
+    def create_user(cls, email: Email, password: Password) -> 'User':
+        new_user = cls(email=email, password=password)
+        new_user.register_event(NewUserCreated(email=email.as_generic_type(), password=password.as_generic_type()))
+        return new_user
+
     def __post_init__(self):
         if self.notification is None:
-            print('ok')
             self.notification = Notification(email=self.email)
 
     def add_to_project(self, project: Project):
         self.projects.add(project)
-        AddUserToProject(project_name=project.name.value, project_oid=project.oid, user_oid=self.oid)
+        self.register_event(NewUserInProject(project_name=project.name.value, project_oid=project.oid, user_oid=self.oid))

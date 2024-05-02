@@ -15,7 +15,7 @@ class BaseModel:
     def __hash__(self) -> int:
         return hash(self.oid)
 
-    def __eq__(self, __value: 'BaseModel') -> bool:
+    def __eq__(self, __value: object) -> bool:
         return self.oid == __value.oid
 
     def __ne__(self, __value: 'BaseModel') -> bool:

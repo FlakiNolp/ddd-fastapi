@@ -7,8 +7,8 @@ from app.domain.values.email import Email
 @dataclass
 class Notification(BaseModel):
     email: Email
-    telegram_id: int = field(default=None)
-    vk_domain: str = field(default=None)
+    telegram_id: int | None = field(default=None)
+    vk_domain: str | None = field(default=None)
 
     def __hash__(self) -> int:
         return hash(self.oid)

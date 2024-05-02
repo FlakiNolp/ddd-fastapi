@@ -6,7 +6,13 @@ from app.domain.values.project_name import ProjectName
 
 
 @dataclass
-class AddUserToProject(BaseEvent):
+class NewUserInProject(BaseEvent):
     project_name: str
     project_oid: uuid.UUID
     user_oid: uuid.UUID
+
+
+@dataclass
+class NewUserCreated(BaseEvent):
+    email: str
+    password: str
