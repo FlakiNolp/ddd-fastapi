@@ -9,4 +9,4 @@ class UserWithThatEmailAlreadyExistsException(LogicException):
 
     @property
     def message(self):
-        return f'Пользователь с такой почтой <{self.email}> уже сущесвует'
+        return f'Пользователь с почтой <{self.email}> уже сущесвует'

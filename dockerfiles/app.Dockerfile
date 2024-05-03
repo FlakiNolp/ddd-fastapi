@@ -1,6 +1,6 @@
 FROM python:3.12.3 as builder
-WORKDIR /src/auth
+WORKDIR /src/app
 RUN pip install --upgrade pip
-COPY ../src/auth/requirements.txt /src/auth
+COPY ../src/app/requirements.txt /src/app
 RUN pip install -r requirements.txt
-COPY ../src/auth/ /src/auth
+COPY ../src/app/ /src/app

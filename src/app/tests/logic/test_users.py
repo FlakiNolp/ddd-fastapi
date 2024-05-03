@@ -1,28 +1,28 @@
 from app.domain.values.email import Email
 from app.domain.values.password import Password
-from app.tests.logic.conftest import *  #noqa
+from app.tests.conftest import *  #noqa
 import pytest
 
 from app.domain.models.user import User
 from app.infrastructure.repositories.users import BaseUserRepository
-from app.tests import Mediator
-from app.tests import CreateUserCommand
+from app.logic import Mediator, CreateUserCommand
 from app.logic.exceptions.users import UserWithThatEmailAlreadyExistsException
 
 
 @pytest.mark.asyncio
 async def test_created_user_command_success(
     user_repository: BaseUserRepository,
-    mediator: Mediator
+    mediator: Mediator,
 ):
-    user: User = (await mediator.handle_command(CreateUserCommand(email='a@gmail.com', password='aB6.12321')))[0]
+    user: User
+    user, *_ = await mediator.handle_command(CreateUserCommand(email='a@gmail.com', password='aB6.12321'))
     assert await user_repository.check_user_exists_by_email(email=user.email.as_generic_type())
 
 
 @pytest.mark.asyncio
 async def test_created_user_command_email_already_exists(
     user_repository: BaseUserRepository,
-    mediator: Mediator
+    mediator: Mediator,
 ):
     user: User = User(email=Email('a@gmail.com'), password=Password('aB6.12321'))
     await user_repository.add_user(user)

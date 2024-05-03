@@ -1,12 +1,24 @@
 version: "3.9"
 
 services:
-  auth-app:
+#  auth-app:
+#    build:
+#      dockerfile: dockerfiles/auth.Dockerfile
+#    container_name: auth-app
+#    ports:
+#      - "8001:8000"
+#    command: "uvicorn --factory application.api.main:create_app --reload --host 0.0.0.0 --port 8000"
+#    env_file:
+#      - src/auth/.env
+
+  main-app:
     build:
-      dockerfile: dockerfiles/auth.Dockerfile
-    container_name: auth-app
+      dockerfile: dockerfiles/app.Dockerfile
+    container_name: main-app
     ports:
       - "${API_PORT}:8000"
     command: "uvicorn --factory application.api.main:create_app --reload --host 0.0.0.0 --port 8000"
     env_file:
-      - src/auth/.env
+      - src/app/.env
+    volumes:
+      - /src/app/:/app/:rw
