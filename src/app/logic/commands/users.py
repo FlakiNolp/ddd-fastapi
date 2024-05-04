@@ -4,7 +4,7 @@ from typing import Any
 from app.domain.models.user import User
 from app.domain.values.email import Email
 from app.domain.values.password import Password
-from app.infrastructure.repositories.users import BaseUserRepository
+from app.infrastructure.repositories.users.base import BaseUserRepository
 from app.logic.commands.base import BaseCommand, CommandHandler
 from app.logic.exceptions.users import UserWithThatEmailAlreadyExistsException
 

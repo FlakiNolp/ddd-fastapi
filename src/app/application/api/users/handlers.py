@@ -15,7 +15,7 @@ router = APIRouter(
 
 
 @router.post(
-    '/',
+    '/create-new-user',
     response_model=CreateUserResponseSchema,
     status_code=status.HTTP_201_CREATED,
     description='Создает нового пользователя, если пользователя с таким email не существует',
@@ -24,7 +24,13 @@ router = APIRouter(
         status.HTTP_400_BAD_REQUEST: {'model': ErrorSchema},
     }
 )
-async def create_chat_handler(schema: CreateUserRequestSchema, container=Depends(init_container)):
+async def create_user_handler(schema: CreateUserRequestSchema, container=Depends(init_container)):
+    """
+    Создать нового пользователя
+    :param schema: CreateUserRequestSchema
+    :param container: None
+    :return: CreateUserResponseSchema
+    """
     mediator: Mediator = container.resolve(Mediator)
     try:
         user, *_ = await mediator.handle_command(CreateUserCommand(email=schema.email, password=schema.password))

@@ -4,7 +4,7 @@ from app.tests.conftest import *  #noqa
 import pytest
 
 from app.domain.models.user import User
-from app.infrastructure.repositories.users import BaseUserRepository
+from app.infrastructure.repositories.users.base import BaseUserRepository
 from app.logic import Mediator, CreateUserCommand
 from app.logic.exceptions.users import UserWithThatEmailAlreadyExistsException
 

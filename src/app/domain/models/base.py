@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from app.domain.events.base import BaseEvent
 
 
-@dataclass()
+@dataclass
 class BaseModel:
     oid: uuid.UUID = field(default_factory=lambda: uuid.uuid4(), kw_only=True)
     __events: list[BaseEvent] = field(

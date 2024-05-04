@@ -25,11 +25,14 @@ class Mediator[ET: BaseEvent, ER: Any, CT: BaseCommand, CR: Any]:
     def register_command(self, command: CT, command_handlers: Iterable[CommandHandler[CT, CR]]):
         self.events_map[command].extend(command_handlers)
 
-    async def handle_event(self, event: ET) -> Iterable[ER]:
-        handlers = self.events_map.get(event)
+    async def publish(self, events: Iterable[ET]) -> Iterable[ER]:
+        handlers = self.events_map.get(events[0].__class__)
         if not handlers:
-            raise EventHandlersNotRegisteredException(event)
-        return [await handler.handle(event) for handler in handlers]
+            raise EventHandlersNotRegisteredException(events[0].__class__)
+        result = []
+        for event in events:
+            result.extend([await handler.handle(events) for handler in handlers])
+        return result
 
     async def handle_command(self, command: BaseCommand) -> Iterable[CR]:
         command_type = command.__class__

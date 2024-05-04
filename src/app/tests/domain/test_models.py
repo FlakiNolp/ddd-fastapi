@@ -67,3 +67,17 @@ def test_add_user_to_project():
     assert new_event.project_oid == project.oid
     assert new_event.project_name == project.name.value
 
+
+def test_recursive_unmapped_user():
+    email = Email('mx@gmail.com')
+    password = Password('h.G4aj')
+    notification = Notification(email, 123, 'osetr')
+    projects = {Project(name=ProjectName('first')), Project(name=ProjectName('second'))}
+    card = {Card(cart_number=CardNumber('4563714481766217'), owner_last_name=LastName('MAXIM'),
+                 owner_first_name=FirstName('OSETROV'), cvv=CVV(543))}
+    subscription_plan = SubscriptionPlan(name='first', event_volume=10000, project_volume=5, data_retention=60)
+    user = User(email, password, notification=notification, projects=projects, card=card,
+                subscription_plan=subscription_plan)
+    print(user)
+    print(user.model_dump())
+

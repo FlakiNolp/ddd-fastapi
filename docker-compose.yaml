@@ -1,6 +1,32 @@
 version: "3.9"
 
 services:
+  postgres_db:
+    container_name: postgres_ddd
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: "ddd-fastapi"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - /2. Init Database:/docker-entrypoint-initdb.d
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d ddd-fastapi" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+    networks:
+      backend:
+
 #  auth-app:
 #    build:
 #      dockerfile: dockerfiles/auth.Dockerfile
@@ -20,5 +46,12 @@ services:
     command: "uvicorn --factory application.api.main:create_app --reload --host 0.0.0.0 --port 8000"
     env_file:
       - src/app/.env
-    volumes:
-      - /src/app/:/app/:rw
+    networks:
+      backend:
+
+volumes:
+  postgres-data:
+
+networks:
+  backend:
+    driver: bridge
